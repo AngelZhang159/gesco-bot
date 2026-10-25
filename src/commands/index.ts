@@ -1,6 +1,7 @@
 import { DiscordAPIError, MessageFlags, REST, RESTJSONErrorCodes, Routes, type Interaction } from "discord.js";
 import type { AppConfig } from "../config.js";
 import { handleButton } from "../interactions/buttons.js";
+import { DROPS_VIEW_PREFIX, handleDropsView } from "../interactions/dropsView.js";
 import { logger } from "../logger.js";
 import { avisos } from "./avisos.js";
 import { ayuda } from "./ayuda.js";
@@ -46,8 +47,9 @@ export async function handleInteraction(interaction: Interaction, ctx: BotContex
       await byName.get(interaction.commandName)?.execute(interaction, ctx);
     } else if (interaction.isAutocomplete()) {
       await byName.get(interaction.commandName)?.autocomplete?.(interaction, ctx);
-    } else if (interaction.isButton()) {
-      await handleButton(interaction, ctx);
+    } else if (interaction.isButton() || interaction.isStringSelectMenu() || interaction.isModalSubmit()) {
+      if (interaction.customId.startsWith(`${DROPS_VIEW_PREFIX}:`)) await handleDropsView(interaction, ctx);
+      else if (interaction.isButton()) await handleButton(interaction, ctx);
     }
   } catch (err) {
     const command = interaction.isCommand() ? interaction.commandName : undefined;

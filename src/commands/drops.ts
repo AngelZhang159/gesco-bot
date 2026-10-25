@@ -1,6 +1,6 @@
 import { EmbedBuilder, InteractionContextType, MessageFlags, SlashCommandBuilder } from "discord.js";
+import { buildDropsView, INITIAL_VIEW } from "../interactions/dropsView.js";
 import { COLORS, truncate } from "../notifier/embeds.js";
-import { discordTs } from "../time.js";
 import { gameKey } from "../types.js";
 import type { BotContext, Command } from "./types.js";
 
@@ -53,7 +53,7 @@ export const drops: Command = {
         .addStringOption((o) => o.setName("juego").setDescription("Nombre del juego").setRequired(true).setAutocomplete(true)),
     )
     .addSubcommand((s) => s.setName("filtros").setDescription("Ver tus juegos seguidos y bloqueados"))
-    .addSubcommand((s) => s.setName("activos").setDescription("Ver todas las campañas de drops activas")),
+    .addSubcommand((s) => s.setName("activos").setDescription("Ver las campañas de drops activas, con filtros y búsqueda")),
 
   async execute(interaction, ctx) {
     const { guildId, user } = interaction;
@@ -99,16 +99,8 @@ export const drops: Command = {
       await interaction.reply({ content: "No conozco campañas de drops activas ahora mismo.", flags: MessageFlags.Ephemeral });
       return;
     }
-    const lines = [...Map.groupBy(campaigns, (c) => c.gameName)].map(([game, list]) => {
-      const end = Math.max(...list.map((c) => new Date(c.endAt).getTime()));
-      return `**${game}** — ${list.length} campaña${list.length > 1 ? "s" : ""}, hasta ${discordTs(end, "d")}`;
-    });
-    const embed = new EmbedBuilder()
-      .setColor(COLORS.drops)
-      .setTitle(`🪂 Campañas de drops activas (${campaigns.length})`)
-      .setDescription(truncate(lines.join("\n"), 4000))
-      .setFooter({ text: "Usa /drops seguir o /drops bloquear para elegir de qué juegos te aviso" });
-    await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
+    const view = buildDropsView(campaigns, ctx.repos.filters.listForUser(guildId, user.id), INITIAL_VIEW);
+    await interaction.reply({ ...view, flags: MessageFlags.Ephemeral });
   },
 
   async autocomplete(interaction, ctx) {

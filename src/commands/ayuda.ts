@@ -38,7 +38,7 @@ const TOPICS = {
       "`/drops bloquear juego:<nombre>` → nunca te aviso de ese juego",
       "`/drops quitar juego:<nombre>` → elimina ese filtro",
       "`/drops filtros` → ver tus filtros",
-      "`/drops activos` → todas las campañas activas ahora mismo",
+      "`/drops activos` → campañas activas, con un desplegable para ver solo las que sigues y búsqueda por nombre",
       "",
       "**Reglas:** si no sigues ningún juego, te aviso de todos menos los bloqueados. Si sigues alguno, solo de esos.",
       "También puedes usar los botones **🔔 Seguir** / **🚫 Bloquear** de cada mensaje de drops.",

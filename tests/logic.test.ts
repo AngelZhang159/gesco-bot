@@ -3,11 +3,14 @@ import { openDb } from "../src/db/index.js";
 import { channelFor } from "../src/db/repos/guilds.js";
 import { createRepos } from "../src/db/repos/index.js";
 import type { Pickem } from "../src/db/repos/pickems.js";
+import { buildDropsView, decodeViewId, encodeViewId, gameRows, PAGE_SIZE, type ViewMode } from "../src/interactions/dropsView.js";
 import { reminderTime } from "../src/jobs/reminder.js";
 import { dropsRecipients, mentionChunks, mentionedIds } from "../src/notifier/mentions.js";
+import type { DropCampaign } from "../src/sources/drops/types.js";
 import { decideMerge, sortCandidates } from "../src/sources/pickem/dedupe.js";
 import type { PickemCandidate } from "../src/sources/pickem/newsProvider.js";
 import { zonedTime } from "../src/time.js";
+import { gameKey } from "../src/types.js";
 
 describe("menciones de drops", () => {
   const filters = [
@@ -162,5 +165,62 @@ describe("repositorios", () => {
     repos.guilds.remove("g1");
     expect(repos.guilds.get("g1")).toBeUndefined();
     expect(repos.subs.usersFor("g1", "drops")).toEqual([]);
+  });
+});
+
+describe("vista de /drops activos", () => {
+  const camp = (game: string, i: number, startAt = "2026-10-20T00:00:00Z"): DropCampaign => ({
+    id: `${game}-${i}`,
+    gameKey: gameKey(game),
+    gameName: game,
+    boxArt: null,
+    name: `Campaña ${i}`,
+    startAt,
+    endAt: "2026-11-10T00:00:00Z",
+    rewards: [],
+    url: "https://www.twitch.tv/drops/campaigns",
+    accountLinkUrl: null,
+  });
+  const campaigns = [camp("Rust", 1), camp("Rust", 2), camp("Pokémon GO", 1), camp("Valorant", 1, "2026-10-30T00:00:00Z")];
+  const filters = [
+    { user_id: "u", game_key: "rust", game_name: "Rust", mode: "allow" as const },
+    { user_id: "u", game_key: "valorant", game_name: "Valorant", mode: "block" as const },
+  ];
+  const names = (mode: ViewMode, query = "") => gameRows(campaigns, filters, { mode, query }).map((g) => g.name);
+
+  it("agrupa por juego, ordena por nombre y aplica el modo del desplegable", () => {
+    expect(names("t")).toEqual(["Pokémon GO", "Rust", "Valorant"]);
+    expect(names("s")).toEqual(["Rust"]);
+    expect(names("b")).toEqual(["Pokémon GO", "Rust"]);
+    expect(gameRows(campaigns, filters, { mode: "t", query: "" }).find((g) => g.name === "Rust")?.campaigns).toBe(2);
+  });
+
+  it("la búsqueda ignora mayúsculas y tildes y se combina con el modo", () => {
+    expect(names("t", "POKEMON")).toEqual(["Pokémon GO"]);
+    expect(names("t", "val")).toEqual(["Valorant"]);
+    expect(names("b", "val")).toEqual([]);
+  });
+
+  it("el estado viaja en el customId, también con ':' en la búsqueda, y cabe en 100 caracteres", () => {
+    const state = { mode: "s" as const, page: 3, query: "a:b".padEnd(50, "x") };
+    const id = encodeViewId("limpiar", state);
+    expect(id.length).toBeLessThanOrEqual(100);
+    expect(decodeViewId(id)).toEqual({ action: "limpiar", state });
+    expect(decodeViewId("drops:allow:rust")).toBeNull();
+  });
+
+  it("pagina y ajusta páginas fuera de rango; los customId de un mensaje son únicos", () => {
+    const many = Array.from({ length: PAGE_SIZE + 5 }, (_, i) => camp(`Juego ${String(i).padStart(2, "0")}`, 1));
+    const view = buildDropsView(many, [], { mode: "t", page: 9, query: "" }, Date.parse("2026-10-25T00:00:00Z"));
+    const embed = view.embeds[0]!.toJSON();
+    expect(embed.description?.split("\n")).toHaveLength(5);
+    expect(embed.footer?.text).toMatch(/^Página 2\/2/);
+    const ids = view.components.flatMap((row) => row.toJSON().components.map((c) => ("custom_id" in c ? c.custom_id : "")));
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it("explica el caso de no seguir ningún juego", () => {
+    const view = buildDropsView(campaigns, [], { mode: "s", page: 0, query: "" });
+    expect(view.embeds[0]!.toJSON().description).toMatch(/No sigues ningún juego/);
   });
 });

@@ -77,7 +77,7 @@ npm run check-sources -- pickem  # solo una: epic | drops | pickem
 | `/avisos activar\|desactivar categoria` | todos | Recibir o dejar de recibir menciones (Epic, Drops, Pick'em o Todas) |
 | `/avisos ver` | todos | Tus suscripciones y filtros |
 | `/drops seguir\|bloquear\|quitar juego` | todos | Filtrar de qué juegos te aviso (autocompleta) |
-| `/drops filtros` · `/drops activos` | todos | Tus filtros · campañas activas |
+| `/drops filtros` · `/drops activos` | todos | Tus filtros · campañas activas (filtrar por seguidos o buscar por nombre) |
 | `/epic` | todos | Juegos gratis ahora mismo |
 | `/pickem activos` | todos | Pick'em abiertos y su cierre |
 | `/pickem descartar id` | admins | Borra un pick'em detectado por error |
