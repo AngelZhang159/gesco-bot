@@ -119,6 +119,9 @@ alguno, solo de esos. Los mensajes de drops traen botones **馃敂 Seguir** / **馃
   como la de drops pueden fallar durante horas. El bot conserva los 煤ltimos datos buenos y reintenta;
   nunca interpreta un fallo como "no hay novedades". Si te afecta a menudo, configura un proxy en `.env`
   (`HTTPS_PROXY=...` y `NODE_USE_ENV_PROXY=1`).
+- **"La aplicaci贸n no ha respondido" en los comandos:** Discord solo da 3 s para contestar. Si el DNS
+  de la red local falla a ratos, cada conexi贸n nueva tarda 4 s o m谩s en resolverse. Por eso el
+  `docker-compose.yml` fija los DNS de Google y Quad9; si tu red los bloquea, c谩mbialos por otros.
 - La fuente de drops y la extracci贸n de fechas de pick'em no son APIs oficiales: si cambian, el bot lo
   registra en los logs en lugar de publicar datos err贸neos. El adaptador de drops est谩 aislado en
   `src/sources/drops/` para poder cambiar de proveedor.

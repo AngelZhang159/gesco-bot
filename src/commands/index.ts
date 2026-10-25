@@ -1,4 +1,4 @@
-import { MessageFlags, REST, Routes, type Interaction } from "discord.js";
+import { DiscordAPIError, MessageFlags, REST, RESTJSONErrorCodes, Routes, type Interaction } from "discord.js";
 import type { AppConfig } from "../config.js";
 import { handleButton } from "../interactions/buttons.js";
 import { logger } from "../logger.js";
@@ -26,7 +26,14 @@ export async function registerCommands(cfg: AppConfig): Promise<void> {
   }
 }
 
+// La interacción ya no admite respuesta: caducó (Discord espera 3 s) u otro proceso la contestó antes
+const GONE_CODES = new Set<number | string>([
+  RESTJSONErrorCodes.UnknownInteraction,
+  RESTJSONErrorCodes.InteractionHasAlreadyBeenAcknowledged,
+]);
+
 export async function handleInteraction(interaction: Interaction, ctx: BotContext): Promise<void> {
+  const receivedAfterMs = Date.now() - interaction.createdTimestamp;
   if (!interaction.inCachedGuild()) {
     if (interaction.isRepliable()) {
       await interaction.reply({ content: "Este bot solo funciona dentro de un servidor.", flags: MessageFlags.Ephemeral });
@@ -43,7 +50,19 @@ export async function handleInteraction(interaction: Interaction, ctx: BotContex
       await handleButton(interaction, ctx);
     }
   } catch (err) {
-    logger.error({ err, command: interaction.isCommand() ? interaction.commandName : undefined }, "Error atendiendo interacción");
+    const command = interaction.isCommand() ? interaction.commandName : undefined;
+    if (err instanceof DiscordAPIError && GONE_CODES.has(err.code)) {
+      // Si se respondió a tiempo, casi siempre es otra instancia del bot con el mismo token
+      const respondedAfterMs = Date.now() - interaction.createdTimestamp;
+      logger.warn(
+        { command, code: err.code, recibidaTrasMs: receivedAfterMs, respuestaTrasMs: respondedAfterMs },
+        respondedAfterMs < 3000
+          ? "Otro proceso respondió a la interacción antes: ¿hay otra instancia del bot con el mismo token?"
+          : "La respuesta llegó tarde: Discord solo espera 3 s",
+      );
+      return;
+    }
+    logger.error({ err, command }, "Error atendiendo interacción");
     if (!interaction.isRepliable()) return;
     const content = "❌ Ha ocurrido un error. Inténtalo de nuevo en un momento.";
     if (interaction.deferred || interaction.replied) await interaction.editReply(content).catch(() => undefined);
