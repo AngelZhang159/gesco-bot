@@ -1,0 +1,57 @@
+[
+  {
+    "gameId": "263490",
+    "gameDisplayName": "Rust",
+    "gameBoxArtURL": "https://static-cdn.jtvnw.net/ttv-boxart/263490_IGDB-{width}x{height}.jpg",
+    "startAt": "2026-10-20T18:00:00Z",
+    "endAt": "2026-11-02T18:00:00Z",
+    "rewards": [
+      {
+        "id": "c0ffee01-aaaa-bbbb-cccc-000000000001",
+        "name": "Rust Drops Week 47",
+        "status": "ACTIVE",
+        "startAt": "2026-10-20T18:00:00Z",
+        "endAt": "2026-11-02T18:00:00Z",
+        "detailsURL": "https://twitch.facepunch.com/",
+        "accountLinkURL": "https://twitch.facepunch.com/connect",
+        "timeBasedDrops": [
+          {
+            "id": "d1",
+            "name": "Hoodie",
+            "requiredMinutesWatched": 120,
+            "benefitEdges": [{ "benefit": { "id": "b1", "name": "Streamer Hoodie", "imageAssetURL": "https://example.com/hoodie.png" } }]
+          },
+          {
+            "id": "d2",
+            "name": "Pants",
+            "requiredMinutesWatched": 240,
+            "benefitEdges": [{ "benefit": { "id": "b2", "name": "Streamer Pants", "imageAssetURL": "https://example.com/pants.png" } }]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "gameId": "516575",
+    "gameDisplayName": "VALORANT",
+    "gameBoxArtURL": "https://static-cdn.jtvnw.net/ttv-boxart/516575-{width}x{height}.jpg",
+    "rewards": [
+      {
+        "id": "c0ffee02-aaaa-bbbb-cccc-000000000002",
+        "name": "Champions Watch Party",
+        "startAt": "2026-10-26T10:00:00Z",
+        "endAt": "2026-11-09T10:00:00Z",
+        "timeBasedDrops": [
+          { "id": "d3", "name": "Gun Buddy", "requiredMinutesWatched": 60, "benefitEdges": [] }
+        ]
+      },
+      {
+        "id": "c0ffee03-aaaa-bbbb-cccc-000000000003",
+        "name": "Old campaign",
+        "startAt": "2026-09-01T10:00:00Z",
+        "endAt": "2026-09-15T10:00:00Z",
+        "timeBasedDrops": []
+      }
+    ]
+  }
+]

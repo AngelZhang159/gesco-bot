@@ -1,0 +1,47 @@
+{
+  "$comment": "Juegos vigilados para detectar pick'em. Añade más copiando un bloque. {query} se sustituye en cada feed. Los cambios se aplican en el siguiente ciclo (no hace falta reiniciar).",
+  "maxAgeDays": 7,
+  "feeds": [
+    "https://news.google.com/rss/search?q={query}+when:7d&hl=en-US&gl=US&ceid=US:en",
+    "https://news.google.com/rss/search?q={query}+when:7d&hl=es&gl=ES&ceid=ES:es",
+    "https://www.bing.com/news/search?q={query}&format=rss&setlang=en&cc=US"
+  ],
+  "games": [
+    {
+      "key": "lol",
+      "name": "League of Legends",
+      "aliases": ["League of Legends", "LoL", "Worlds", "MSI", "LoL Esports"],
+      "queries": ["pick'em League of Legends", "pick'em Worlds LoL", "pick'em MSI LoL"]
+    },
+    {
+      "key": "valorant",
+      "name": "Valorant",
+      "aliases": ["Valorant", "VCT"],
+      "queries": ["pick'em Valorant", "VCT pick'em"]
+    },
+    {
+      "key": "marvel-rivals",
+      "name": "Marvel Rivals",
+      "aliases": ["Marvel Rivals", "Marvel Rivals Ignite"],
+      "queries": ["\"Marvel Rivals\" pick'em", "\"Marvel Rivals\" predictions rewards", "\"Marvel Rivals\" predicciones recompensas"]
+    },
+    {
+      "key": "cs2",
+      "name": "Counter-Strike 2",
+      "aliases": ["CS2", "Counter-Strike", "CS2 Major"],
+      "queries": ["CS2 Major pick'em", "Counter-Strike pick'em"]
+    },
+    {
+      "key": "r6",
+      "name": "Rainbow Six Siege",
+      "aliases": ["Rainbow Six", "R6", "Siege", "Six Invitational"],
+      "queries": ["Rainbow Six pick'em", "R6 pick'em"]
+    },
+    {
+      "key": "overwatch",
+      "name": "Overwatch",
+      "aliases": ["Overwatch", "OWCS"],
+      "queries": ["Overwatch pick'em", "OWCS pick'em"]
+    }
+  ]
+}

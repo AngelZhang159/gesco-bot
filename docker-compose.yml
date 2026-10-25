@@ -1,0 +1,16 @@
+services:
+  bot:
+    build: .
+    container_name: bot-discord-noticias
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      TZ: Europe/Madrid
+    volumes:
+      - ./data:/app/data      # base de datos SQLite
+      - ./config:/app/config  # pickem-sources.json editable
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
