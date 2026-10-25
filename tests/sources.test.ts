@@ -67,6 +67,19 @@ describe("Twitch Drops (sunkwi)", () => {
     expect(parseSunkwiDrops(flat, at)[0]).toMatchObject({ id: "x1", gameName: "Marvel Rivals", gameKey: "marvel rivals" });
   });
 
+  it("parsea una muestra de la respuesta real de la API", () => {
+    const real = JSON.parse(fixture("drops-sunkwi.real-sample.json"));
+    const campaigns = parseSunkwiDrops(real, new Date("2026-10-25T12:00:00Z"));
+    expect(campaigns.map((c) => c.gameName)).toEqual(["Epic Seven", "Eternal Return", "Marbles on Stream", "RavenQuest"]);
+    for (const c of campaigns) {
+      expect(c.rewards.length).toBeGreaterThan(0);
+      expect(c.boxArt).toMatch(/^https:\/\//);
+      expect(c.url).toMatch(/^https?:\/\//);
+    }
+    // Pasada la fecha de fin, no queda ninguna
+    expect(parseSunkwiDrops(real, new Date("2026-10-26T00:00:00Z"))).toEqual([]);
+  });
+
   it("falla (en vez de devolver vacío) si no reconoce el formato", () => {
     expect(() => parseSunkwiDrops([{ foo: "bar" }], at)).toThrow(/formato inesperado/);
     expect(() => parseSunkwiDrops("<html>", at)).toThrow(/formato inesperado/);

@@ -14,6 +14,8 @@ const EnvSchema = z.object({
   EPIC_LOCALE: z.string().default("es-ES"),
   EPIC_COUNTRY: z.string().default("ES"),
   DROPS_API_URL: z.string().url().default("https://twitch-drops-api.sunkwi.com/drops"),
+  /** Hora (en TZ) de la consulta diaria a las fuentes. */
+  DAILY_RUN_TIME: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Formato HH:MM, p. ej. 18:00").default("18:00"),
 });
 
 export type AppConfig = z.infer<typeof EnvSchema>;

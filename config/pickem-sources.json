@@ -1,5 +1,5 @@
 {
-  "$comment": "Juegos vigilados para detectar pick'em. Añade más copiando un bloque. {query} se sustituye en cada feed. Los cambios se aplican en el siguiente ciclo (no hace falta reiniciar).",
+  "$comment": "Juegos vigilados para detectar pick'em. Añade más copiando un bloque. {query} se sustituye en cada feed. Los cambios se aplican en la siguiente consulta diaria (no hace falta reiniciar).",
   "maxAgeDays": 7,
   "feeds": [
     "https://news.google.com/rss/search?q={query}+when:7d&hl=en-US&gl=US&ceid=US:en",

@@ -1,5 +1,7 @@
 node_modules/
 dist/
-data/
+data/*
+!data/.gitkeep
 .env
 *.log
+tests/fixtures/*.real.json

@@ -44,22 +44,24 @@ export function createJobs(ctx: AppContext): Jobs {
       return { epic, drops, pickem }[category].forceForGuild(guildId);
     },
     start() {
-      // Epic cambia los jueves a las 17:00 (Madrid); cada hora basta
-      schedule("epic", "5 * * * *", () => epic.run());
-      schedule("drops", "*/30 * * * *", () => drops.run());
-      schedule("pickem", "15 */2 * * *", () => pickem.run());
+      // Una consulta al día a todas las fuentes; un fallo en una no impide las demás
+      const daily = async () => {
+        for (const [name, job] of [["epic", epic], ["drops", drops], ["pickem", pickem]] as const) {
+          try {
+            await job.run();
+          } catch (err) {
+            logger.error({ job: name, err }, "Error en job");
+          }
+        }
+      };
+      const [hour, minute] = ctx.config.DAILY_RUN_TIME.split(":").map(Number);
+      schedule("diario", `${minute} ${hour} * * *`, daily);
+      // Los recordatorios no consultan fuentes externas: solo miran la BD para avisar a su hora
       schedule("pickem-reminders", "*/10 * * * *", () => pickem.runReminders());
 
-      // Primera pasada al arrancar, escalonada
-      const initial: [number, () => Promise<void>][] = [
-        [5_000, () => epic.run()],
-        [15_000, () => drops.run()],
-        [30_000, () => pickem.run()],
-      ];
-      for (const [delay, fn] of initial) {
-        timers.push(setTimeout(() => fn().catch((err: unknown) => logger.error({ err }, "Error en la primera pasada")), delay));
-      }
-      logger.info("Tareas programadas iniciadas");
+      // Primera pasada al arrancar, para no esperar hasta la hora diaria tras un despliegue
+      timers.push(setTimeout(() => void daily(), 5_000));
+      logger.info({ diario: ctx.config.DAILY_RUN_TIME, tz: ctx.config.TZ }, "Tareas programadas iniciadas");
     },
     stop() {
       for (const c of crons) c.stop();
