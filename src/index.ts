@@ -5,6 +5,7 @@ import type { BotContext } from "./commands/types.js";
 import { loadConfig } from "./config.js";
 import type { AppContext } from "./context.js";
 import { openDb } from "./db/index.js";
+import { keepRestWarm, restAgent } from "./discordRest.js";
 import { createRepos } from "./db/repos/index.js";
 import { createJobs } from "./jobs/scheduler.js";
 import { logger } from "./logger.js";
@@ -17,7 +18,8 @@ const db = openDb(path.join(config.DATA_DIR, "bot.sqlite"));
 const repos = createRepos(db);
 
 // Solo necesitamos el intent Guilds: los comandos slash no requieren leer mensajes
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds], rest: { agent: restAgent } });
+let stopRestPing = () => {};
 const appCtx: AppContext = {
   config,
   client,
@@ -29,6 +31,7 @@ const ctx: BotContext = { ...appCtx, jobs: createJobs(appCtx) };
 
 client.once(Events.ClientReady, async (c) => {
   logger.info({ user: c.user.tag, guilds: c.guilds.cache.size }, "Bot conectado");
+  stopRestPing = keepRestWarm(client);
   try {
     await registerCommands(config);
   } catch (err) {
@@ -84,6 +87,7 @@ async function sendWelcome(guild: Guild): Promise<void> {
 function shutdown(signal: string) {
   logger.info({ signal }, "Cerrando...");
   ctx.jobs.stop();
+  stopRestPing();
   void client.destroy().finally(() => {
     db.close();
     process.exit(0);

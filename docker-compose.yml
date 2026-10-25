@@ -6,11 +6,6 @@ services:
     env_file: .env
     environment:
       TZ: Europe/Madrid
-    # DNS fijos: si el DNS de la red local no contesta, Docker espera 4 s antes de reintentar,
-    # y Discord solo da 3 s para responder a un comando ("La aplicación no ha respondido")
-    dns:
-      - 8.8.8.8
-      - 9.9.9.9
     volumes:
       - ./data:/app/data      # base de datos SQLite
       - ./config:/app/config  # pickem-sources.json editable
