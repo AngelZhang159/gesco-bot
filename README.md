@@ -8,6 +8,8 @@ Publica en tu servidor:
 
 Cada usuario decide de qué quiere que le mencione con `/avisos`. Toda la ayuda está en `/ayuda`.
 
+[Términos de Servicio](TERMINOS.md) · [Política de Privacidad](PRIVACIDAD.md)
+
 ---
 
 ## 1. Crear el bot en Discord
