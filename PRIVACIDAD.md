@@ -37,7 +37,7 @@ Los datos se guardan en una base de datos SQLite en el equipo donde se ejecuta e
 
 Para funcionar, el bot se comunica con la API de Discord, que trata los datos según su propia
 [política de privacidad](https://discord.com/privacy). Las consultas a las fuentes externas (Epic
-Games, `twitch-drops-api.sunkwi.com`, Google News, Bing News y los artículos enlazados) no incluyen
+Games, `drops.sunkwi.com`, Google News, Bing News y los artículos enlazados) no incluyen
 ningún dato de los usuarios ni de los servidores.
 
 ## 4. Cuánto tiempo se guardan

@@ -28,7 +28,7 @@ if (which === "all" || which === "epic") {
 
 if (which === "all" || which === "drops") {
   console.log("\n=== Twitch Drops ===");
-  const url = env.DROPS_API_URL ?? "https://twitch-drops-api.sunkwi.com/drops";
+  const url = env.DROPS_API_URL ?? "https://drops.sunkwi.com/api/twitch/drops";
   try {
     const raw = await fetchJson<unknown>(url, { timeoutMs: 20_000 });
     const out = path.resolve("tests/fixtures/drops-sunkwi.real.json");

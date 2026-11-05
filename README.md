@@ -93,7 +93,7 @@ alguno, solo de esos. Los mensajes de drops traen botones **🔔 Seguir** / **�
 | Fuente | De dónde sale |
 |---|---|
 | Epic | API pública de la tienda (`freeGamesPromotions`) |
-| Twitch Drops | agregador comunitario [`twitch-drops-api.sunkwi.com`](https://twitch-drops-api.sunkwi.com/drops) |
+| Twitch Drops | agregador comunitario [`drops.sunkwi.com`](https://drops.sunkwi.com/docs) |
 | Pick'em | RSS de Google News y Bing News + lectura del artículo |
 
 - **Frecuencia:** las tres fuentes se consultan **una vez al día**, a la hora de `DAILY_RUN_TIME`
