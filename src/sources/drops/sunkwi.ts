@@ -3,7 +3,7 @@ import { gameKey } from "../../types.js";
 import { twitchGameUrl, type DropCampaign, type DropReward, type DropsSource } from "./types.js";
 
 /**
- * Adaptador para el agregador comunitario https://twitch-drops-api.sunkwi.com/drops.
+ * Adaptador para el agregador comunitario https://drops.sunkwi.com/api/twitch/drops.
  *
  * El JSON replica las estructuras de la API interna de Twitch (DropCampaign, timeBasedDrops,
  * benefitEdges...), agrupadas por juego. El parseo es tolerante a variaciones de nombres de campos

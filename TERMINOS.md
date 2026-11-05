@@ -30,7 +30,7 @@ y menciona a los usuarios que se han suscrito a cada categoría con `/avisos`.
 ## 3. Información de terceros
 
 La información que publica el bot (juegos gratis, drops, pick'em, fechas y enlaces) procede de fuentes
-externas: la API pública de Epic Games, el agregador comunitario `twitch-drops-api.sunkwi.com` y
+externas: la API pública de Epic Games, el agregador comunitario `drops.sunkwi.com` y
 noticias de Google News y Bing News. **No se garantiza que sea correcta, completa ni actual**:
 comprueba siempre la fuente original antes de actuar (por ejemplo, antes de que cierre un pick'em).
 
